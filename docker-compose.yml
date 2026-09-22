@@ -1,0 +1,42 @@
+services:
+  # container do SQL Server
+  sqlserver:
+    # definir a imagem do SQL Server
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    # nome do container
+    container_name: sqlserver_express
+    # reinicie automaticamente a menos que eu tenha parado o container
+    restart: unless-stopped
+    # definir variáveis de ambiente
+    environment:
+      # aceitar os termos de licença
+      ACCEPT_EULA: "Y"
+      # definir a versão sql server como express
+      MSSQL_PID: "Express"
+      # definir a senha do usuário sa
+      SA_PASSWORD: "SqlServer@123"
+    # mapear a porta 1433 do container para a porta 1433 do host
+    ports:
+      - "1433:1433"
+    # onde será persistido os dados do banco de dados
+    volumes:
+      - ./dados/data:/var/opt/mssql/data
+      - ./dados/log:/var/opt/mssql/log
+      - ./dados/secrets:/var/opt/mssql/secrets
+
+  #container do admin cloudbeaver
+  cloudbeaver:
+    # definir a imagem do cloudbeaver
+    image: dbeaver/cloudbeaver:latest
+    # nome do container
+    container_name: cloudbeaver_dev
+    # reinicie automaticamente a menos que eu tenha parado o container
+    restart: unless-stopped
+    # mapear a porta 8978 do container para a porta 8978 do host
+    # Usar no host http://localhost:8978 ou http://127.0.0.1:8978/
+    ports:
+      - "8978:8978"      
+    # volumes onde sera persistido os dados do cloudbeaver
+    volumes:
+      - ./cloudbeaver:/opt/cloudbeaver/workspace  
+
